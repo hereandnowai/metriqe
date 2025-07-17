@@ -1,0 +1,12 @@
+langchain
+langchain-google-genai
+python-dotenv
+uv
+langchain-community
+wikipedia
+langchain-experimental
+pandas
+beautifulsoup4
+lxml
+yfinance
+langchain-ollama

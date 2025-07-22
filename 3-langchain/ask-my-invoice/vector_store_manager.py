@@ -72,13 +72,13 @@ def add_to_vector_store(files):
                 page.metadata.update(metadata)
                 page.metadata['source'] = pdf_path
 
-            document.extend[doc_pages]
+            document.extend(doc_pages)
             
         except Exception as e:
             print("error",e)
-            failed_files.extend[os.path.basename(pdf_path)]
+            failed_files.extend(os.path.basename(pdf_path))
 
-        texts = RecursiveCharacterTextSplitter(chunksize= 1000,chunk_overlap = 200).split_documents(documents=document)
+        texts = RecursiveCharacterTextSplitter(chunk_size= 1000,chunk_overlap = 200).split_documents(documents=document)
 
         if vector_store_instance is None:
             client = chromadb.PersistentClient(VECTOR_STORE_DIR)
@@ -117,3 +117,23 @@ def add_to_vector_store(files):
 
 
 #Clear all the Data
+
+
+def clear_all_data():
+    """Clears the vector store collection and all PDFs."""
+    global vector_store_instance
+    vector_store_instance = None
+    
+    try:
+        client = chromadb.PersistentClient(path=VECTOR_STORE_DIR)
+        client.delete_collection(name=COLLECTION_NAME)
+    except Exception as e:
+        print(f"Could not clear collection (it might not exist): {e}")
+
+    if os.path.exists(PDF_DIRS):
+        shutil.rmtree(PDF_DIRS)
+    os.makedirs(PDF_DIRS)
+    
+    return "Status: All documents and knowledge base have been cleared.", gr.update(choices=[], value=None)
+
+

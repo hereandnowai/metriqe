@@ -11,27 +11,28 @@ from vector_store_manager import get_vector_store_instance
 
 def get_qa_chain():
     """Build and returns a SelfQueryRetriever"""
-    vector_store_instance = get_vector_store_instance
+    vector_store_instance = get_vector_store_instance()
     if vector_store_instance == None:
         return None
     
     return SelfQueryRetriever.from_llm(
             llm=llm,
             vectorstore= vector_store_instance,
+            document_contents=DOCUMENT_DESCRIPTION,
             metadata_field_info= metadata_field_info,
-            search_kwargs={"k":5},
-            verbose = True
+            verbose = True,
+            search_kwargs={"k":5}
         )
 
 def get_answer(question):
     if not question:
         return "Please Enter the Question to answer"
     
-    retriver = get_qa_chain()
-    if retriver == None:
+    retriever = get_qa_chain()
+    if retriever == None:
         return " There is no knowledgebase to answer. please upload the pdfs"
 
-    retrive_docs = retriver.invoke(question)
+    retrive_docs = retriever.invoke(question)
 
     if any(word in question.lower() for word in ["total", "sum", "count", "average"] ):
         total = 0
@@ -46,7 +47,8 @@ def get_answer(question):
                 seen_invoices.add(invoice_id)
         
         answer = f"found {invoicecount} invoices: The total value is {total}"
-        sources = "\n".join([ f"-{os.path.basename(doc.metadata.get("source","unknown"))}" for doc in retrive_docs])
+        #sources = "\n".join([ f"-{os.path.basename(doc.metadata.get("source","unknown"))}" for doc in retrive_docs]) 
+        sources = "\n".join([ f"-{os.path.basename(doc.metadata.get('source', 'Unknown'))}" for doc in retrive_docs])
         return answer, sources
     else:
         prompt_template = """
@@ -65,7 +67,7 @@ def get_answer(question):
         QA_PROMPT = PromptTemplate.from_template(prompt_template)
 
         rag_chain = (
-            {"context": retriver , "question": RunnablePassthrough()}
+            {"context": retriever , "question": RunnablePassthrough()}
             |QA_PROMPT
             |llm
             |StrOutputParser()
@@ -74,7 +76,6 @@ def get_answer(question):
         answer = rag_chain.invoke(question)
         sources = "\n".join([ f"-{os.path.basename(doc.metadata.get("source","unknown"))}" for doc in retrive_docs])
         return answer, sources
-
 
 
 

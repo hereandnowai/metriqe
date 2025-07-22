@@ -1,6 +1,6 @@
 import gradio as gr
-from vector_store_manager import get_pdf_list,add_to_vector_store
-
+from vector_store_manager import get_pdf_list,add_to_vector_store, clear_all_data
+from qa_chain_builder import get_answer
 
 def setup_gradio_ui():
     """Sets up the launch of gradio web interface"""
@@ -30,7 +30,7 @@ def setup_gradio_ui():
                 gr.Markdown("### 4. Ask a Question")
                 answer_output = gr.Markdown("your answer will appear here")
                 gr.Markdown("### 5. Sources")
-                answer_output = gr.Markdown("source document will appear here")
+                sources_output = gr.Markdown("source document will appear here")
 
 
         app.load(get_pdf_list,outputs=pdf_list_dropdown)
@@ -40,6 +40,20 @@ def setup_gradio_ui():
             inputs=[file_uploader],
             outputs=[processing_status,pdf_list_dropdown]
         )
+
+        ask_button.click(
+            get_answer,
+            inputs=[question_input],
+            outputs=[answer_output,sources_output]
+        )
+
+        clear_button.click(
+            clear_all_data, 
+            inputs=[], 
+            outputs=[processing_status, pdf_list_dropdown]
+        )
+        
+
     return app
 
 

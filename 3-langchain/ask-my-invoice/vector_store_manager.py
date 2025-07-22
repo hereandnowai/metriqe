@@ -3,8 +3,15 @@ from config import PDF_DIRS, VECTOR_STORE_DIR, COLLECTION_NAME
 from llm_utils import embeddings
 import chromadb
 from langchain_chroma import Chroma
+from langchain_community.document_loaders import PyPDFLoader
+from metadata_extractor import extract_metadata_from_document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import shutil
 import gradio as gr
+
+
+
+
 vector_store_instance = None
 
 #Loading the PDFs
@@ -52,7 +59,51 @@ def add_to_vector_store(files):
             status += f" skipped : {",".join(skipped_files)}"
         return status, gr.update(choices=get_pdf_list())
 
-    status = f"uploaded files count: {len(new_pdf_paths)}"
+    document = []
+    failed_files = []
+
+    for pdf_path in new_pdf_paths:
+        try:
+            loader = PyPDFLoader(pdf_path)
+            doc_pages = loader.load()
+            metadata = extract_metadata_from_document(doc_pages[0].page_content)
+            
+            for page in doc_pages:
+                page.metadata.update(metadata)
+                page.metadata['source'] = pdf_path
+
+            document.extend[doc_pages]
+            
+        except Exception as e:
+            print("error",e)
+            failed_files.extend[os.path.basename(pdf_path)]
+
+        texts = RecursiveCharacterTextSplitter(chunksize= 1000,chunk_overlap = 200).split_documents(documents=document)
+
+        if vector_store_instance is None:
+            client = chromadb.PersistentClient(VECTOR_STORE_DIR)
+            vector_store_instance = Chroma(client = client,
+                                           collection_name= COLLECTION_NAME, 
+                                           embedding_function=embeddings)
+            if vector_store_instance._collection.count() == 0:
+                vector_store_instance = Chroma.from_documents(client =client,
+                                                              collection_name = COLLECTION_NAME,
+                                                              embedding= embeddings,
+                                                              documents= texts,
+                                                              persist_directory= VECTOR_STORE_DIR
+                                                              )
+            else:
+                vector_store_instance.add_documents(documents=texts)
+
+        else:
+            vector_store_instance.add_documents(documents=texts)
+        
+
+    total_docs_in_chromadb = vector_store_instance._collection.count()
+    status = f"Added {len(new_pdf_paths) - len(failed_files)}  new files, we have {total_docs_in_chromadb} are there in chromadb " 
+    status += f"{len(failed_files)} are failed ."
+    status += f"failed to process {", ".join(failed_files)}."
+    
     return status, gr.update(choices=get_pdf_list())
 
     

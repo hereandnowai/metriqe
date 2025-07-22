@@ -8,27 +8,27 @@ class InvocieMetaData(BaseModel):
     total_value: float = Field(description= "The total amount of the invoice")
     customer_name: str = Field(description= "The name of the company that we have invoiced")
 
-    metadata_field_info:ClassVar[List[AttributeInfo]] = [
-        AttributeInfo(
-            name = "invoice_date",
-            description = "The date invoice was issued, in format DD-MM-YYYY",
-            type = "string",
-        ),
-        AttributeInfo(
-            name = "invoice_number",
-            description = "The unique identifier of the invoice",
-            type = "string",
-        ),
-        AttributeInfo(
-            name = "total_value",
-            description = "The total amount of the invoice",
-            type = "float",
-        ),
-        AttributeInfo(
-            name = "customer_name",
-            description = "The name of the company that we have invoiced",
-            type = "string",
-        ),
-    ]
+metadata_field_info = [
+    AttributeInfo(
+        name = "invoice_date",
+        description = "The date invoice was issued, in format DD-MM-YYYY",
+        type = "string",
+    ),
+    AttributeInfo(
+        name = "invoice_number",
+        description = "The unique identifier of the invoice",
+        type = "string",
+    ),
+    AttributeInfo(
+        name = "total_value",
+        description = "The total amount of the invoice",
+        type = "float",
+    ),
+    AttributeInfo(
+        name = "customer_name",
+        description = "The name of the company that we have invoiced",
+        type = "string",
+    ),
+]
 
 DOCUMENT_DESCRIPTION = "Scanned Invoices and Billing statements"

@@ -9,8 +9,8 @@ import ast # abstract syntax tree
 import time
 import sys
 
-import warnings
-warnings.filterwarnings("ignore", message="")
+# import warnings
+# warnings.filterwarnings("ignore", message="")
 
 load_dotenv()
 google_api_key = os.getenv("GEMINI_API_KEY")
@@ -48,7 +48,7 @@ def run_finance_agent_stock_price():
     wait_time = 15
     print(f"Please wait for {wait_time} seconds")
     for i in range(wait_time, 0, -1):
-        sys.stdout.write(f"\rWaiting... {i} seonds remaining")
+        sys.stdout.write(f"\rWaiting...  {i} seonds remaining")
         sys.stdout.flush
         time.sleep(1)
     sys.stdout.write(f"\rDone waiting... Caramel start your work")

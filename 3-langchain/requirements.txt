@@ -10,3 +10,9 @@ beautifulsoup4
 lxml
 yfinance
 langchain-ollama
+langchain-openai
+pdf2image
+pytesseract
+
+# sudo apt update
+# sudo apt install tesseract-ocr libtesseract-dev

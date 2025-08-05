@@ -1,0 +1,9 @@
+openai
+gradio
+requests
+python-dotenv
+bs4
+pypdf2
+numpy
+scikit-learn
+faiss-cpu

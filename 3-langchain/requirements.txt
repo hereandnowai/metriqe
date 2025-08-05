@@ -1,0 +1,18 @@
+langchain
+langchain-google-genai
+python-dotenv
+uv
+langchain-community
+wikipedia
+langchain-experimental
+pandas
+beautifulsoup4
+lxml
+yfinance
+langchain-ollama
+langchain-openai
+pdf2image
+pytesseract
+
+# sudo apt update
+# sudo apt install tesseract-ocr libtesseract-dev

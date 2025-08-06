@@ -6,7 +6,7 @@ def research_agent(state):
     Uses the TavilySearch tool to get content from the given urls.
     """
     print("--- RESEARCH AGENT ---")
-    urls = state.get("url", [])
+    urls = state.get("urls", [])
     if not urls:
         print(" > No URLs provided for the research")
         return {"research_results": ""}

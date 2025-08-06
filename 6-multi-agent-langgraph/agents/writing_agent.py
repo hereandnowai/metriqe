@@ -17,7 +17,7 @@ def writing_agent(state):
     organization_description = state["organization_description"]
 
     with open(research_file, "r") as f:
-        research_content = f.read
+        research_content = f.read()
 
     llm = ChatGoogleGenerativeAI(model=model, temperature=0.7, google_api_key=google_api_key)
 

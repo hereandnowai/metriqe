@@ -20,7 +20,7 @@ def get_stock_price(ticker: str, tool_context: ToolContext):
 
 
 tool_agent = Agent(
-    model='gemini-2.0-flash-001',
+    model='gemini-2.5-flash',
     name='tool_agent',
     description='A helpful assistant in fetching the stock price',
     instruction="""you are an expert in stock exchange, always use the get_stock_price tool

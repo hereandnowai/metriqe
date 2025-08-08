@@ -7,3 +7,13 @@ pypdf2
 numpy
 scikit-learn
 faiss-cpu
+
+
+mcp
+langchain
+langchain-mcp-adapters
+langchain-google-genai
+langchain-ollama
+langchain-core
+google-adk
+
